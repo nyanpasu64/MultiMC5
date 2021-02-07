@@ -36,6 +36,27 @@ void LaunchController::login()
 {
     JavaCommon::checkJVMArgs(m_instance->settings()->get("JvmArgs").toString(), m_parentWidget);
 
+    // Mojang account login bypass
+    bool ok = false;
+    QString usedname = "Player";
+    QString name = QInputDialog::getText(m_parentWidget, tr("Player name"),
+                                         tr("Choose your offline mode player name."),
+                                         QLineEdit::Normal, "Player", &ok);
+    if (!ok)
+    {
+        return;
+    }
+    if (name.length())
+    {
+        usedname = name;
+    }
+    m_session = std::make_shared<AuthSession>();
+    m_session->MakeCracked(usedname);
+
+    launchInstance();
+
+    // Original login code
+    /*
     // Find an account to use.
     std::shared_ptr<MojangAccountList> accounts = MMC->accounts();
     MojangAccountPtr account = accounts->activeAccount();
@@ -182,7 +203,7 @@ void LaunchController::login()
         }
         }
     }
-    emitFailed(tr("Failed to launch."));
+    emitFailed(tr("Failed to launch."));*/
 }
 
 void LaunchController::launchInstance()

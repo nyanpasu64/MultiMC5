@@ -3,6 +3,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QStringList>
+#include <QCryptographicHash>
 
 QString AuthSession::serializeUserProperties()
 {
@@ -24,6 +25,20 @@ bool AuthSession::MakeOffline(QString offline_playername)
         return false;
     }
     session = "-";
+    player_name = offline_playername;
+    status = PlayableOffline;
+    return true;
+}
+
+bool AuthSession::MakeCracked(QString offline_playername)
+{
+    session = "-";
+    // Filling session with dummy data
+    client_token = "ff64ff64ff64ff64ff64ff64ff64ff64";
+    access_token = "ff64ff64ff64ff64ff64ff64ff64ff64";
+    // TODO: Fetch actual UUID's from Mojang API so they match with real ones
+    uuid = QString(QCryptographicHash::hash(offline_playername.toLocal8Bit(), QCryptographicHash::Md5).toHex());
+
     player_name = offline_playername;
     status = PlayableOffline;
     return true;
